@@ -7,19 +7,34 @@ class ProductosProvider {
 
   final String _url = 'https://flutter-varioscl.firebaseio.com';
 
-  Future<bool> crearProducto( ProductoModel producto ) async {
+  Future<int> crearProducto( ProductoModel producto ) async {
 
     final url = '$_url/productos.json';
 
     final resp = await http.post(url, body: productoModelToJson(producto));
 
-    final decodedData = jsonDecode(resp.body);
+    // final decodedData = jsonDecode(resp.body);
 
-    print(decodedData);
+    // print(decodedData);
 
-    return true;
+    return resp.statusCode;
 
   }
+
+  Future<int> editarProducto( ProductoModel producto ) async {
+
+    final url = '$_url/productos/${producto.id}.json';
+
+    final resp = await http.put(url, body: productoModelToJson(producto));
+
+    // final decodedData = jsonDecode(resp.body);
+
+    print(resp.statusCode);
+
+    return resp.statusCode;
+
+  }
+
 
   Future<List<ProductoModel>> cargarProductos() async {
 
