@@ -3,6 +3,7 @@ import 'package:flutter_crud_example/src/blocs/providers.dart';
 import 'package:flutter_crud_example/src/page/home_page.dart';
 import 'package:flutter_crud_example/src/page/login_page.dart';
 import 'package:flutter_crud_example/src/page/producto_page.dart';
+import 'package:flutter_crud_example/src/page/registro_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,9 +13,10 @@ class MyApp extends StatelessWidget {
     final matApp = MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      initialRoute: 'home',
+      initialRoute: 'login',
       routes: {
         'login': (BuildContext context) => LoginPage(),
+        'registro': (BuildContext context) => RegistroPage(),
         'home': (BuildContext context) => HomePage(),
         'producto': (BuildContext context) => ProductoPage(),
       },

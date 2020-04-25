@@ -3,10 +3,9 @@ import 'package:flutter_crud_example/src/blocs/login_bloc.dart';
 import 'package:flutter_crud_example/src/blocs/providers.dart';
 import 'package:flutter_crud_example/src/providers/usuarios_provider.dart';
 
-class LoginPage extends StatelessWidget {
+class RegistroPage extends StatelessWidget {
 
   final usuarioProvider = UsuarioProvider();
-
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +135,7 @@ class LoginPage extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Ingreso',
+                  'Crear Cuenta',
                   style: TextStyle(fontSize: 20),
                 ),
                 SizedBox(
@@ -155,8 +154,8 @@ class LoginPage extends StatelessWidget {
             ),
           ),
           FlatButton(
-            child: Text('¿No tiene una cuenta?, Registrate'),
-            onPressed: () => Navigator.pushReplacementNamed(context, 'registro'),
+            child: Text('¿Ya tienes una cuenta?, Ingresa'),
+            onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
           ),
           SizedBox(
             height: 100,
@@ -214,23 +213,22 @@ class LoginPage extends StatelessWidget {
           return RaisedButton(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-              child: Text('Ingresar'),
+              child: Text('Registrar'),
             ),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             elevation: 0.0,
             color: Colors.deepPurple,
             textColor: Colors.white,
-            onPressed: snapshot.hasData ? () => _login(bloc, context) : null,
+            onPressed: snapshot.hasData ? () => _register(bloc, context) : null,
           );
         });
   }
 
-  _login(LoginBloc bloc, BuildContext context) async {
+  _register(LoginBloc bloc, BuildContext context) async {
 
-    Map<String, dynamic> resp = await usuarioProvider.login(bloc.email, bloc.password);
+    Map<String, dynamic> resp = await usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
     print(resp);
-
     // pushReplacementNamed convierte a la ruta de navegación en el nuevo root
     // Navigator.pushReplacementNamed(context, 'home');
 
