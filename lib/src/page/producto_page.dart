@@ -35,11 +35,11 @@ class _ProductoPageState extends State<ProductoPage> {
         title: Text('Producto'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.photo_size_select_actual), 
+            icon: Icon(Icons.photo_size_select_actual),
             onPressed: _seleccionarFoto,
           ),
           IconButton(
-            icon: Icon(Icons.camera_alt), 
+            icon: Icon(Icons.camera_alt),
             onPressed: _tomarFoto,
           ),
         ],
@@ -117,7 +117,7 @@ class _ProductoPageState extends State<ProductoPage> {
             }));
   }
 
-  void _submit() {
+  void _submit() async {
     // formKey.currentState.validate(): esta instrucción regresará un true si el formulario es válido
 
     if (!formKey.currentState.validate()) return;
@@ -130,6 +130,11 @@ class _ProductoPageState extends State<ProductoPage> {
     setState(() {
       _guardando = true;
     });
+
+    // subir imagen a cloudinary
+    if (foto != null) {
+      producto.fotoUrl = await productosProvider.subirImagen(foto);
+    }
 
     if (producto.id == null) {
       productosProvider.crearProducto(producto);
@@ -157,14 +162,15 @@ class _ProductoPageState extends State<ProductoPage> {
   }
 
   _mostrarFoto() {
- 
     if (producto.fotoUrl != null) {
- 
-      return Container();
- 
+      return FadeInImage(
+          placeholder: AssetImage('assets/loading.gif'),
+          image: NetworkImage(producto.fotoUrl),
+          height: 300,
+          width: double.infinity,
+          fit: BoxFit.contain);
     } else {
- 
-      if( foto != null ){
+      if (foto != null) {
         return Image.file(
           foto,
           fit: BoxFit.cover,
@@ -173,31 +179,23 @@ class _ProductoPageState extends State<ProductoPage> {
       }
       return Image.asset('assets/no-image.png');
     }
-    
   }
 
   _seleccionarFoto() async {
-
-   _procesarImagen(ImageSource.gallery);
-
+    _procesarImagen(ImageSource.gallery);
   }
 
   _tomarFoto() async {
-
     _procesarImagen(ImageSource.camera);
-
   }
 
   _procesarImagen(ImageSource origen) async {
-
     foto = await ImagePicker.pickImage(source: origen);
 
     if (foto != null) {
-      // limpieza
+      producto.fotoUrl = null;
     }
 
     setState(() {});
-
   }
-
 }
