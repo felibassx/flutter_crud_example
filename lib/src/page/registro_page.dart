@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_crud_example/src/blocs/login_bloc.dart';
 import 'package:flutter_crud_example/src/blocs/providers.dart';
 import 'package:flutter_crud_example/src/providers/usuarios_provider.dart';
+import 'package:flutter_crud_example/src/utils/utils.dart' as utils;
 
 class RegistroPage extends StatelessWidget {
-
   final usuarioProvider = UsuarioProvider();
 
   @override
@@ -226,11 +226,15 @@ class RegistroPage extends StatelessWidget {
   }
 
   _register(LoginBloc bloc, BuildContext context) async {
+    Map info = await usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
+    String mensaje = (info['message'] == null) ? '' : info['message'];
 
-    Map<String, dynamic> resp = await usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
-    print(resp);
-    // pushReplacementNamed convierte a la ruta de navegación en el nuevo root
-    // Navigator.pushReplacementNamed(context, 'home');
+    if (info['ok']) {
+      // Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      utils.mostrarAlerta(context, mensaje, 'Información Erronea');
+    }
 
+    print(info['message']);
   }
 }

@@ -4,8 +4,14 @@ import 'package:flutter_crud_example/src/page/home_page.dart';
 import 'package:flutter_crud_example/src/page/login_page.dart';
 import 'package:flutter_crud_example/src/page/producto_page.dart';
 import 'package:flutter_crud_example/src/page/registro_page.dart';
+import 'package:flutter_crud_example/src/preferencias_usuario/preferencias_usuario.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = new PreferenciasUsuario();
+  await prefs.initPrefs();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -23,6 +29,8 @@ class MyApp extends StatelessWidget {
       theme: _themeApp(),
     );
 
+    // Es un widget que almacena información, se utiliza con el patrón bloc
+    // el el padre de todos los widget y sus hijos piden información desde abajo
     return Provider(
       child: matApp,
     );
@@ -42,11 +50,11 @@ class MyApp extends StatelessWidget {
           fontSize: 72.0,
           fontWeight: FontWeight.bold,
         ),
-        title: TextStyle(
-            fontSize: 26.0, color: Colors.white),
-        body1: TextStyle(fontSize: 14.0,),
-        button:
-            TextStyle(fontSize: 14.0, color: Colors.white),
+        title: TextStyle(fontSize: 26.0, color: Colors.white),
+        body1: TextStyle(
+          fontSize: 14.0,
+        ),
+        button: TextStyle(fontSize: 14.0, color: Colors.white),
         display1: TextStyle(
             fontSize: 13.0, fontFamily: 'Hind', color: Colors.black26),
       ),

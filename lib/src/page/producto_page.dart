@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_crud_example/src/blocs/providers.dart';
 import 'package:flutter_crud_example/src/models/producto_model.dart';
-import 'package:flutter_crud_example/src/providers/productos_providers.dart';
 import 'package:flutter_crud_example/src/utils/utils.dart' as utils;
 import 'package:image_picker/image_picker.dart';
 
@@ -13,16 +13,18 @@ class ProductoPage extends StatefulWidget {
 }
 
 class _ProductoPageState extends State<ProductoPage> {
+
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  ProductosBloc productosBloc;
   ProductoModel producto = new ProductoModel();
-  final productosProvider = new ProductosProvider();
   bool _guardando = false;
   File foto;
 
   @override
   Widget build(BuildContext context) {
+
     final ProductoModel prodData = ModalRoute.of(context).settings.arguments;
 
     if (prodData != null) {
@@ -118,6 +120,8 @@ class _ProductoPageState extends State<ProductoPage> {
   }
 
   void _submit() async {
+
+    productosBloc = new ProductosBloc();
     // formKey.currentState.validate(): esta instrucción regresará un true si el formulario es válido
 
     if (!formKey.currentState.validate()) return;
@@ -132,14 +136,15 @@ class _ProductoPageState extends State<ProductoPage> {
     });
 
     // subir imagen a cloudinary
+    print(foto);
     if (foto != null) {
-      producto.fotoUrl = await productosProvider.subirImagen(foto);
+      producto.fotoUrl = await productosBloc.subirFoto(foto);
     }
 
     if (producto.id == null) {
-      productosProvider.crearProducto(producto);
+      productosBloc.crearProducto(producto);
     } else {
-      productosProvider.editarProducto(producto);
+      productosBloc.editarProducto(producto);
     }
 
     setState(() {

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_crud_example/src/blocs/login_bloc.dart';
 import 'package:flutter_crud_example/src/blocs/providers.dart';
 import 'package:flutter_crud_example/src/providers/usuarios_provider.dart';
+import 'package:flutter_crud_example/src/utils/utils.dart' as utils;
 
 class LoginPage extends StatelessWidget {
 
   final usuarioProvider = UsuarioProvider();
-
 
   @override
   Widget build(BuildContext context) {
@@ -228,11 +228,15 @@ class LoginPage extends StatelessWidget {
 
   _login(LoginBloc bloc, BuildContext context) async {
 
-    Map<String, dynamic> resp = await usuarioProvider.login(bloc.email, bloc.password);
-    print(resp);
+    Map info = await usuarioProvider.login(bloc.email, bloc.password);
 
-    // pushReplacementNamed convierte a la ruta de navegación en el nuevo root
-    // Navigator.pushReplacementNamed(context, 'home');
+    String mensaje = (info['message'] == null) ? '' : info['message'];
+
+    if (info['ok']) {
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      utils.mostrarAlerta(context, mensaje, 'Información Erronea');
+    }
 
   }
 }

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_crud_example/src/blocs/providers.dart';
 import 'package:flutter_crud_example/src/models/producto_model.dart';
-import 'package:flutter_crud_example/src/providers/productos_providers.dart';
-// import 'package:flutter_crud_example/src/blocs/providers.dart';
 
 class HomePage extends StatelessWidget {
-  final productosProvider = new ProductosProvider();
+  
 
   @override
   Widget build(BuildContext context) {
-    // final bloc = Provider.of(context);
+
+    final productosBloc = Provider.productosBloc(context);
+    productosBloc.cargarProductos();
 
     return Scaffold(
       appBar: AppBar(
@@ -16,7 +17,7 @@ class HomePage extends StatelessWidget {
         'Home Page',
         style: Theme.of(context).textTheme.title,
       )),
-      body: _crearListado(),
+      body: _crearListado(productosBloc),
       floatingActionButton: _crearBoton(context),
     );
   }
@@ -28,32 +29,31 @@ class HomePage extends StatelessWidget {
         onPressed: () => Navigator.pushNamed(context, 'producto'));
   }
 
-  Widget _crearListado() {
-    return FutureBuilder(
-        future: productosProvider.cargarProductos(),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<ProductoModel>> snapshot) {
-          if (snapshot.hasData) {
+  Widget _crearListado(ProductosBloc bloc) {
+    // se utiliza un StreamBuilder para utilizar el bloc
+    return StreamBuilder(
+      stream: bloc.productosStream ,
+      builder: (BuildContext context, AsyncSnapshot<List<ProductoModel>> snapshot){
+        if (snapshot.hasData) {
             final productos = snapshot.data;
 
             return ListView.builder(
               itemCount: productos.length,
-              itemBuilder: (context, i) => _crearItem(context, productos[i]),
+              itemBuilder: (context, i) => _crearItem(context, bloc, productos[i]),
             );
           } else {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
-        });
+      },
+    );
   }
 
-  Widget _crearItem(BuildContext context, ProductoModel producto) {
+  Widget _crearItem(BuildContext context, ProductosBloc bloc, ProductoModel producto) {
     return Dismissible(
       background: Container(color: Colors.red),
-      onDismissed: (direccion) {
-        productosProvider.borrarProducto(producto.id);
-      },
+      onDismissed: (direccion) => bloc.borrarProducto(producto.id),
       key: UniqueKey(),
       child: Card(
         child: Column(
